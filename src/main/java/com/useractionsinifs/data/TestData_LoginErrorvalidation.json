@@ -1,0 +1,33 @@
+[
+    {
+      "username": "inforosqa01@infor.com",
+      "password": "Nrth~dd4s#kola8",
+      "description": "Valid user credentials - standard user"
+    },
+    {
+      "username": "validUser2",
+      "password": "validPassword2",
+      "description": "Valid user credentials - admin user"
+    },
+    {
+      "username": "invalidUser1",
+      "password": "invalidPassword1",
+      "description": "Invalid username and password"
+    },
+    {
+      "username": "validUser1",
+      "password": "wrongPassword",
+      "description": "Valid username but invalid password"
+    },
+    {
+      "username": "",
+      "password": "validPassword1",
+      "description": "Empty username"
+    },
+    {
+      "username": "validUser1",
+      "password": "",
+      "description": "Empty password"
+    }
+  ]
+  

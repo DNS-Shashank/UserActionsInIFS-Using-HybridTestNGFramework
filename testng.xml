@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="IFS User Actions Test Suite">
+    <!-- Register TestListener for ExtentReports generation -->
+    <listeners>
+        <listener class-name="com.useractionsinifs.testComponents.listeners.TestListener"/>
+    </listeners>
+    
+    <test name="Login Tests">
+        <classes>
+            <class name="com.useractionsinifs.testCases.TC_1_LoginTest"/>
+        </classes>
+    <!--  
+    </test>
+    <test name="Home Page Tests">
+        <classes>
+            <class name="com.useractionsinifs.testCases.TC_2_HomePageTest"/>
+        </classes>
+    </test>
+    <test name="IFS Tests">
+        <classes>
+            <class name="com.useractionsinifs.testCases.TC_3_IFSTest"/>
+        </classes>
+    </test>-->
+</suite>

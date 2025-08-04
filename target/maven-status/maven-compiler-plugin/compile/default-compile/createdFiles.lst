@@ -1,0 +1,7 @@
+com\useractionsinifs\utils\ExcelUtils.class
+com\useractionsinifs\pageObjects\LoginPage.class
+com\useractionsinifs\resources\ExtentReportsManager.class
+com\useractionsinifs\abstractComponents\AbstractComponents.class
+com\useractionsinifs\abstractComponents\Security_AbstractComponents.class
+com\useractionsinifs\pageObjects\LandingPage.class
+com\useractionsinifs\pageObjects\SecurityPage_Users.class
