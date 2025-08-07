@@ -1,5 +1,6 @@
 package com.useractionsinifs.pageObjects;
 
+import com.aventstack.extentreports.util.Assert;
 import com.useractionsinifs.abstractComponents.AbstractComponents;
 import com.useractionsinifs.abstractComponents.Security_AbstractComponents;
 import com.useractionsinifs.utils.ExcelUtils;
@@ -142,6 +143,9 @@ public class SecurityPage_Users extends Security_AbstractComponents {
    @FindBy(id="contentArea")
    WebElement userPageCotentArea;
 
+   @FindBy(css = "td[data-idx=\"5\"] div")
+   WebElement searchedUserEmailAddress;
+
 
     public SecurityPage_Users(WebDriver driver) {
         super(driver);
@@ -232,11 +236,13 @@ public class SecurityPage_Users extends Security_AbstractComponents {
         if (exportFormat.equals("CSV")) {
             if (!csvOption.isSelected()) {
                 csvOption.click();
+                Thread.sleep(1000);
             }
         }
         if (exportFormat.equals("XML")) {
             if (!xmlOption.isSelected()) {
                 xmlOption.click();
+                Thread.sleep(1000);
             }
         }
         Thread.sleep(2000);
@@ -371,7 +377,7 @@ public class SecurityPage_Users extends Security_AbstractComponents {
     }
 
     //Copy User
-    public void copyUser(String existingUserEmailID) throws InterruptedException {
+    public String copyUser(String existingUserEmailID) throws InterruptedException {
         searchBox.click();
         searchBox.clear();
         searchBox.sendKeys(existingUserEmailID);
@@ -400,6 +406,7 @@ public class SecurityPage_Users extends Security_AbstractComponents {
         Thread.sleep(500);
         addCopyUserPopup.click();
         logger.info("User copied successfully");
+        return userEmail;
     }
 
     //User Drill Down
@@ -440,10 +447,25 @@ public class SecurityPage_Users extends Security_AbstractComponents {
     //User dELETION confirmation
     public boolean deleteUserConfirmation(String existingUserEmailID) throws InterruptedException {
         searchBox.click();
+        searchBox.clear();
         searchBox.sendKeys(existingUserEmailID);
         searchBox.sendKeys(Keys.ENTER);
         Thread.sleep(2000);
-        return selectAllSelectionCheckbox.isDisplayed();     
+        
+        try {
+            return userDrillDownBtn.isDisplayed();
+        } catch (Exception e) {
+            // If drill-down button not found, user is deleted
+            return false;
+        }
+}
+
+    public String createdUserConfirmation(String existingUserEmailID) throws InterruptedException {
+        searchBox.click();
+        searchBox.sendKeys(existingUserEmailID);
+        searchBox.sendKeys(Keys.ENTER);
+        Thread.sleep(2000);
+        return searchedUserEmailAddress.getText();
     }
 
     public void navigateToUsersFromUserDrilldownPage() {

@@ -65,8 +65,8 @@ public class BaseTest {
                 "/src/main/java/com/useractionsinifs/resources/GlobalProperties.properties");
         prop.load(fis); //Here we're loading the properties file
         
-        // Initialize WebDriver based on property
-        String browserName = prop.getProperty("browser");
+        // Check system property first (mvn test -Dbrowser=firefox), then fallback to properties file
+        String browserName = System.getProperty("browser") != null ? System.getProperty("browser") : prop.getProperty("browser");
         if (browserName.equalsIgnoreCase("chrome")) {
             WebDriverManager.chromedriver().setup();
             ChromeOptions options = new ChromeOptions();
@@ -169,7 +169,15 @@ public class BaseTest {
         logger.info("Executing test teardown");
         
         try {
-            // Check if user is logged in by verifying if user icon exists
+            // STEP 1: Always switch to main document first
+            driver.switchTo().defaultContent();
+            logger.info("Switched to main document context");
+            
+            // STEP 2: Clear any active frame contexts
+            AbstractComponents.exitFrameContext();
+            logger.info("Exited frame contexts");
+            
+            // STEP 3: Check if user is logged in by verifying if user icon exists
             logger.info("Checking if user is logged in...");
             WebElement userIcon = AbstractComponents.accessDOMElement(AbstractComponents.userIconSelector);
             

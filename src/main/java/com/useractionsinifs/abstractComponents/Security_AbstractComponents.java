@@ -2,16 +2,10 @@ package com.useractionsinifs.abstractComponents;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.time.Duration;
 
 /**
  * This class contains common elements and methods for Security module sidebar navigation
@@ -75,90 +69,6 @@ public class Security_AbstractComponents extends AbstractComponents {
         }
     }
     
-   //Validates if a toast message is displayed
-    public boolean isToastMessageDisplayed() {
-        return isToastMessageDisplayed(null, null, 10);
-    }
-    
-    //Validates if a toast message with specific title is displayed
-    public boolean isToastMessageDisplayed(String expectedTitle) {
-        return isToastMessageDisplayed(expectedTitle, null, 10);
-    }
-    
-    //Validates if a toast message with specific title and message is displayed
-    public boolean isToastMessageDisplayed(String expectedTitle, String expectedMessage) {
-        return isToastMessageDisplayed(expectedTitle, expectedMessage, 10);
-    }
-    
-    //Validates if a toast message with specific title and message is displayed within a specified timeout
-    public boolean isToastMessageDisplayed(String expectedTitle, String expectedMessage, int timeoutInSeconds) {
-        try {
-            // Wait for the toast container to be visible
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds));
-            wait.until(ExpectedConditions.visibilityOf(toastContainer));
-            
-            // If specific title is expected, validate it
-            if (expectedTitle != null) {
-                if (!toastTitle.isDisplayed() || !toastTitle.getText().equals(expectedTitle)) {
-                    logger.warn("Toast message title mismatch. Expected: '{}', Actual: '{}'", 
-                            expectedTitle, toastTitle.isDisplayed() ? toastTitle.getText() : "not displayed");
-                    return false;
-                }
-            }
-            
-            // If specific message is expected, validate it
-            if (expectedMessage != null) {
-                if (!toastMessage.isDisplayed() || !toastMessage.getText().equals(expectedMessage)) {
-                    logger.warn("Toast message content mismatch. Expected: '{}', Actual: '{}'", 
-                            expectedMessage, toastMessage.isDisplayed() ? toastMessage.getText() : "not displayed");
-                    return false;
-                }
-            }
-            
-            // Log the success
-            logger.info("Toast message validated successfully. Title: '{}', Message: '{}'", 
-                    toastTitle.isDisplayed() ? toastTitle.getText() : "N/A", 
-                    toastMessage.isDisplayed() ? toastMessage.getText() : "N/A");
-            
-            return true;
-        } catch (TimeoutException e) {
-            logger.warn("Toast message did not appear within {} seconds", timeoutInSeconds);
-            return false;
-        } catch (Exception e) {
-            logger.error("Error while validating toast message: {}", e.getMessage());
-            return false;
-        }
-    }
-    
-    //Waits for a toast message to disappear
-    public boolean waitForToastToDisappear(int timeoutInSeconds) {
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds));
-            wait.until(ExpectedConditions.invisibilityOf(toastContainer));
-            logger.info("Toast message disappeared successfully");
-            return true;
-        } catch (TimeoutException e) {
-            logger.warn("Toast message did not disappear within {} seconds", timeoutInSeconds);
-            return false;
-        }
-    }
-    
-    //Closes the toast message if it's displayed
-    public boolean closeToastMessage() {
-        try {
-            if (toastContainer.isDisplayed() && toastCloseButton.isDisplayed()) {
-                toastCloseButton.click();
-                logger.info("Toast message closed manually");
-                return waitForToastToDisappear(5);
-            }
-            return true;
-        } catch (Exception e) {
-            logger.error("Error while closing toast message: {}", e.getMessage());
-            return false;
-        }
-    }
-
-
     //Toggle security sidebar
     public static void toggleSidebar() {
         logger.info("Toggling security sidebar");

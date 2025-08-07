@@ -1,6 +1,5 @@
-com\useractionsinifs\testCases\SampleTest.class
 com\useractionsinifs\testComponents\BaseTest.class
-com\useractionsinifs\testComponents\listeners\TestListener.class
 com\useractionsinifs\testCases\LoginTests.class
+com\useractionsinifs\testComponents\listeners\TestListener.class
 com\useractionsinifs\testComponents\listeners\RetryAnalyzer.class
 com\useractionsinifs\testComponents\BaseTest$1.class

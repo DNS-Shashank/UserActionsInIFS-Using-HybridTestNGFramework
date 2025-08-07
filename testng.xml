@@ -8,18 +8,38 @@
     
     <test name="Login Tests">
         <classes>
-            <class name="com.useractionsinifs.testCases.TC_1_LoginTest"/>
-        </classes>
-    <!--  
-    </test>
-    <test name="Home Page Tests">
-        <classes>
-            <class name="com.useractionsinifs.testCases.TC_2_HomePageTest"/>
+            <class name="com.useractionsinifs.testCases.LoginTests"/>
         </classes>
     </test>
-    <test name="IFS Tests">
+    
+    <test name="Smoke Tests">
+        <groups>
+            <run>
+                <include name="smoke"/>
+            </run>
+        </groups>
         <classes>
-            <class name="com.useractionsinifs.testCases.TC_3_IFSTest"/>
+            <class name="com.useractionsinifs.testCases.LoginTests"/>
+            <class name="com.useractionsinifs.testCases.UserCreationTest"/>
+            <class name="com.useractionsinifs.testCases.UserPasswordResetTest"/>
+            <class name="com.useractionsinifs.testCases.UserDeletionTest"/>
         </classes>
-    </test>-->
+    </test>
+    
+    <test name="Regression Tests">
+        <groups>
+            <run>
+                <include name="regression"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.useractionsinifs.testCases.LoginTests"/>
+            <class name="com.useractionsinifs.testCases.UserCreationTest"/>
+            <class name="com.useractionsinifs.testCases.UserEnableDisableTest"/>
+            <class name="com.useractionsinifs.testCases.UserSecurityRolesTest"/>
+            <class name="com.useractionsinifs.testCases.UserCopyTest"/>
+            <class name="com.useractionsinifs.testCases.UserImportExportTest"/>
+            <class name="com.useractionsinifs.testCases.UserDeletionTest"/>
+        </classes>
+    </test>
 </suite>

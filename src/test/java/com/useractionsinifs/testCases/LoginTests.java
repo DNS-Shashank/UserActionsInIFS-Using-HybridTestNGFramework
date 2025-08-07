@@ -49,7 +49,7 @@ public class LoginTests extends BaseTest {
         return data;
     }
     
-    @Test(dataProvider = "validLoginData", description = "Verify user can login and logout successfully with valid credentials")
+    @Test(dataProvider = "validLoginData", groups = "smoke",priority = 1,description = "Verify user can login and logout successfully with valid credentials")
     public void validLoginTest(HashMap<String, String> userData) throws InterruptedException {
         logger.info("Starting Valid Login Test");
         logger.info("Using credentials: " + userData.get("description"));
@@ -64,7 +64,7 @@ public class LoginTests extends BaseTest {
         logger.info("Login test completed successfully");
     }
     
-    @Test(dataProvider = "invalidLoginData", description = "Verify system properly handles invalid login attempts")
+    @Test(dataProvider = "invalidLoginData", groups = "regression",priority = 1,description = "Verify system properly handles invalid login attempts")
     public void invalidLoginTest(HashMap<String, String> userData) throws InterruptedException {
         logger.info("Starting Invalid Login Test");
         logger.info("Using invalid credentials: " + userData.get("description"));

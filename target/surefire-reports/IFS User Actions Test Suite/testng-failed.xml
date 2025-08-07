@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [IFS User Actions Test Suite]" guice-stage="DEVELOPMENT" verbose="0">
+  <listeners>
+    <listener class-name="com.useractionsinifs.testComponents.listeners.TestListener"/>
+  </listeners>
+  <test thread-count="5" name="Smoke Tests(failed)" verbose="0">
+    <groups>
+      <run>
+        <include name="smoke"/>
+        <include name="smoke"/>
+      </run>
+    </groups>
+    <classes>
+      <class name="com.useractionsinifs.testCases.UserPasswordResetTest">
+        <methods>
+          <include name="resetPasswordTest" invocation-numbers="0"/>
+          <include name="initializeDriver"/>
+          <include name="tearDown"/>
+        </methods>
+      </class> <!-- com.useractionsinifs.testCases.UserPasswordResetTest -->
+      <class name="com.useractionsinifs.testCases.UserCreationTest">
+        <methods>
+          <include name="createUserTest" invocation-numbers="0"/>
+          <include name="initializeDriver"/>
+          <include name="tearDown"/>
+        </methods>
+      </class> <!-- com.useractionsinifs.testCases.UserCreationTest -->
+      <class name="com.useractionsinifs.testCases.UserDeletionTest">
+        <methods>
+          <include name="initializeDriver"/>
+          <include name="tearDown"/>
+          <include name="deleteUserTest" invocation-numbers="0"/>
+        </methods>
+      </class> <!-- com.useractionsinifs.testCases.UserDeletionTest -->
+    </classes>
+  </test> <!-- Smoke Tests(failed) -->
+  <test thread-count="5" name="Regression Tests(failed)" verbose="0">
+    <groups>
+      <run>
+        <include name="smoke"/>
+        <include name="smoke"/>
+      </run>
+    </groups>
+    <classes>
+      <class name="com.useractionsinifs.testCases.UserCreationTest">
+        <methods>
+          <include name="createUserTest" invocation-numbers="0"/>
+          <include name="initializeDriver"/>
+          <include name="tearDown"/>
+        </methods>
+      </class> <!-- com.useractionsinifs.testCases.UserCreationTest -->
+      <class name="com.useractionsinifs.testCases.UserDeletionTest">
+        <methods>
+          <include name="initializeDriver"/>
+          <include name="tearDown"/>
+          <include name="deleteUserTest" invocation-numbers="0"/>
+        </methods>
+      </class> <!-- com.useractionsinifs.testCases.UserDeletionTest -->
+    </classes>
+  </test> <!-- Regression Tests(failed) -->
+</suite> <!-- Failed suite [IFS User Actions Test Suite] -->
