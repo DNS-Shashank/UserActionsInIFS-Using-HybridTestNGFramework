@@ -7,11 +7,17 @@
     </listeners>
     
     <test name="Login Tests">
+        <groups>
+            <run>
+                <include name="login"/>
+            </run>
+        </groups>
         <classes>
             <class name="com.useractionsinifs.testCases.LoginTests"/>
         </classes>
     </test>
     
+    <!-- Old smoke test configuration - commented out
     <test name="Smoke Tests">
         <groups>
             <run>
@@ -19,10 +25,27 @@
             </run>
         </groups>
         <classes>
-            <class name="com.useractionsinifs.testCases.LoginTests"/>
             <class name="com.useractionsinifs.testCases.UserCreationTest"/>
             <class name="com.useractionsinifs.testCases.UserPasswordResetTest"/>
             <class name="com.useractionsinifs.testCases.UserDeletionTest"/>
+        </classes>
+    </test>
+    -->
+    
+    <!-- New smoke test configuration - class-level filtering -->
+    <test name="Smoke Tests">
+        <classes>
+            <class name="com.useractionsinifs.testCases.UserCreationTest">
+                <methods>
+                    <include name="createUserTest"/>
+                </methods>
+            </class>
+            <class name="com.useractionsinifs.testCases.UserPasswordResetTest"/>
+            <class name="com.useractionsinifs.testCases.UserDeletionTest">
+                <methods>
+                    <include name="deleteUserTest"/>
+                </methods>
+            </class>
         </classes>
     </test>
     
@@ -33,7 +56,6 @@
             </run>
         </groups>
         <classes>
-            <class name="com.useractionsinifs.testCases.LoginTests"/>
             <class name="com.useractionsinifs.testCases.UserCreationTest"/>
             <class name="com.useractionsinifs.testCases.UserEnableDisableTest"/>
             <class name="com.useractionsinifs.testCases.UserSecurityRolesTest"/>

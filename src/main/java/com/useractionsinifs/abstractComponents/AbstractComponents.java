@@ -298,18 +298,30 @@ public class AbstractComponents {
             Boolean exists = (Boolean)((JavascriptExecutor) driver).executeScript("return (" + selector + " != null)");
             
             if (!exists) {
-                logger.warn("Element not found: " + selector);
-                return null;
+                logger.error("Shadow DOM element not found: " + selector);
+                throw new ElementNotFoundException("Shadow DOM element not found: " + selector + 
+                    ". Please verify the selector or wait for element to be available.");
             }
             
             // Use getOuter/InnerHTML or textContent instead of direct casting
-            return (WebElement)((JavascriptExecutor) driver).executeScript(
+            WebElement element = (WebElement)((JavascriptExecutor) driver).executeScript(
                 "return arguments[0]", 
                 ((JavascriptExecutor) driver).executeScript("return " + selector)
             );
+            
+            if (element == null) {
+                logger.error("Shadow DOM element returned null after successful existence check: " + selector);
+                throw new ElementNotFoundException("Shadow DOM element returned null: " + selector);
+            }
+            
+            return element;
+        } catch (ElementNotFoundException e) {
+            // Re-throw our custom exception
+            throw e;
         } catch (Exception e) {
-            logger.error("Shadow DOM access error: " + e.getMessage());
-            return null;
+            logger.error("Shadow DOM access error for selector '" + selector + "': " + e.getMessage());
+            throw new ElementNotFoundException("Shadow DOM access failed for: " + selector + 
+                ". Error: " + e.getMessage(), e);
         }
     }
     

@@ -26,26 +26,16 @@ public class UserCreationTest extends BaseTest {
     SecurityPage_Users securityPageUsers;
     
     @DataProvider(name = "myUserCredentials")
-    public Object[][] getMyUserCredentials() throws IOException {
-        List<HashMap<String, String>> allCredentials = loadTestData("valid");
+    public Object[][] getMyUserCredentials() {
+        HashMap<String, String> credentials = new HashMap<>();
+        credentials.put("username", getValidUsername());
+        credentials.put("password", getValidPassword());
+        credentials.put("description", "Valid user credentials from environment");
         
-        HashMap<String, String> myUser = null;
-        for (HashMap<String, String> cred : allCredentials) {
-            if (cred.get("description").contains("My user")) {
-                myUser = cred;
-                break;
-            }
-        }
-        
-        if (myUser != null) {
-            return new Object[][] {{ myUser }};
-        } else {
-            logger.error("Could not find 'My user' credentials in the test data");
-            return new Object[0][0];
-        }
+        return new Object[][] {{ credentials }};
     }
     
-    @Test(dataProvider = "myUserCredentials", groups = {"smoke", "regression"}, priority = 2, description = "Create a new user")
+    @Test(dataProvider = "myUserCredentials", groups = {"smoke", "regression"}, priority = 1, description = "Create a new user")
     public void createUserTest(HashMap<String, String> userData) throws InterruptedException {
         logger.info("Starting User Creation Test");
         
@@ -62,7 +52,7 @@ public class UserCreationTest extends BaseTest {
         createdUserData = securityPageUsers.createUser();
         createdUserEmail = createdUserData[2];
         logger.info("User created successfully with email: " + createdUserEmail);
-        Thread.sleep(3000);
+        Thread.sleep(3000); 
         
         // Verify user exists
         Assert.assertEquals(securityPageUsers.createdUserConfirmation(createdUserEmail), createdUserEmail);

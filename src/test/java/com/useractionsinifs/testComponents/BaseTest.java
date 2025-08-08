@@ -39,6 +39,17 @@ public class BaseTest {
     
     //Logger
     private static final Logger logger = LogManager.getLogger(BaseTest.class);
+    
+    // Static initialization to load environment variables before any test methods
+    static {
+        loadStaticEnvironmentVariables();
+    }
+    
+    // Static method to load environment variables
+    private static void loadStaticEnvironmentVariables() {
+        // This ensures environment variables are loaded before DataProvider methods
+        logger.info("Loading environment variables for test execution");
+    }
 
     //Logout page elements
     @FindBy(css = "div.title")
@@ -65,6 +76,9 @@ public class BaseTest {
                 "/src/main/java/com/useractionsinifs/resources/GlobalProperties.properties");
         prop.load(fis); //Here we're loading the properties file
         
+        // Override with environment variables if available
+        loadEnvironmentVariables();
+        
         // Check system property first (mvn test -Dbrowser=firefox), then fallback to properties file
         String browserName = System.getProperty("browser") != null ? System.getProperty("browser") : prop.getProperty("browser");
         if (browserName.equalsIgnoreCase("chrome")) {
@@ -89,6 +103,25 @@ public class BaseTest {
         return driver;
     }
     
+    //Load environment variables - NO credential fallbacks for security
+    private void loadEnvironmentVariables() {
+        // Set URL from environment variable with safe default
+        String envUrl = System.getenv("IFS_TEST_URL");
+        if (envUrl != null && !envUrl.isEmpty()) {
+            prop.setProperty("url", envUrl);
+        } else {
+            prop.setProperty("url", "https://mingle-t20-portal.mingle.inforos.dev.inforcloudsuite.com/v2/INTQAINFOROSV2_AX1");
+        }
+        
+        // Credentials are now accessed directly via static methods - no fallbacks stored in properties
+        logger.info("Environment variables loaded. Credentials will be validated when accessed.");
+    }
+    
+    //Get property with environment variable override
+    public String getProperty(String key) {
+        return prop.getProperty(key);
+    }
+    
     //Load test data from JSON file (defaults to valid credentials)
     protected List<HashMap<String, String>> loadTestData() throws IOException {
         return loadTestData("valid");
@@ -100,6 +133,9 @@ public class BaseTest {
         
         // Reading JSON to String
         String jsonContent = FileUtils.readFileToString(new File(filePath), StandardCharsets.UTF_8);
+        
+        // Replace environment variable placeholders
+        jsonContent = replaceEnvironmentVariables(jsonContent);
 
         // Parse JSON structure
         ObjectMapper mapper = new ObjectMapper();
@@ -122,6 +158,59 @@ public class BaseTest {
         return testData;
     }
     
+    //Replace environment variable placeholders in JSON content
+    private String replaceEnvironmentVariables(String content) {
+        // Replace with environment variables or fallbacks
+        content = content.replace("${IFS_USERNAME}", getValidUsername());
+        content = content.replace("${IFS_PASSWORD}", getValidPassword());
+        content = content.replace("${IFS_INVALID_USERNAME}", getInvalidUsername());
+        content = content.replace("${IFS_INVALID_PASSWORD}", getInvalidPassword());
+        return content;
+    }
+    
+    // Static methods to get credentials - NO FALLBACKS for security
+    public static String getValidUsername() {
+        String username = System.getenv("IFS_USERNAME");
+        if (username == null || username.trim().isEmpty()) {
+            throw new RuntimeException("SECURITY ERROR: IFS_USERNAME environment variable is required but not set. " +
+                "Please set: IFS_USERNAME=your-username@infor.com");
+        }
+        return username;
+    }
+    
+    public static String getValidPassword() {
+        String password = System.getenv("IFS_PASSWORD");
+        if (password == null || password.trim().isEmpty()) {
+            throw new RuntimeException("SECURITY ERROR: IFS_PASSWORD environment variable is required but not set. " +
+                "Please set: IFS_PASSWORD=your-secure-password");
+        }
+        return password;
+    }
+    
+    public static String getInvalidUsername() {
+        String username = System.getenv("IFS_INVALID_USERNAME");
+        if (username == null || username.trim().isEmpty()) {
+            return "invalid-user@test.com"; // Safe dummy value for negative testing
+        }
+        return username;
+    }
+    
+    public static String getInvalidPassword() {
+        String password = System.getenv("IFS_INVALID_PASSWORD");
+        if (password == null || password.trim().isEmpty()) {
+            return "wrongPassword123"; // Safe dummy value for negative testing
+        }
+        return password;
+    }
+    
+    public static String getTestUrl() {
+        String url = System.getenv("IFS_TEST_URL");
+        if (url == null || url.trim().isEmpty()) {
+            return "https://mingle-t20-portal.mingle.inforos.dev.inforcloudsuite.com/v2/INTQAINFOROSV2_AX1"; // Default test URL
+        }
+        return url;
+    }
+    
     //Legacy method for backward compatibility
     public List<HashMap<String, String>> getJsonDataToMap(String filePath) throws IOException {
         // By default, return all credentials
@@ -140,10 +229,12 @@ public class BaseTest {
             File source = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
             String destination = screenshotsDir + File.separator + testName + ".png";
             FileUtils.copyFile(source, new File(destination));
+            logger.info("Screenshot captured successfully: " + destination);
             return destination;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+        } catch (Exception e) {
+            logger.error("Screenshot capture failed for test: " + testName + ". Error: " + e.getMessage());
+            // Return empty string instead of null to avoid NullPointerException in TestListener
+            return "";
         }
     }
     
@@ -160,7 +251,8 @@ public class BaseTest {
         PageFactory.initElements(driver, this);
         
         // Navigate to application URL
-        loginPage.goTo(prop.getProperty("url"));
+        String url = getProperty("url");
+        loginPage.goTo(url);
     }
 
     //Teardown method to quit driver and perform logout
@@ -179,10 +271,10 @@ public class BaseTest {
             
             // STEP 3: Check if user is logged in by verifying if user icon exists
             logger.info("Checking if user is logged in...");
-            WebElement userIcon = AbstractComponents.accessDOMElement(AbstractComponents.userIconSelector);
-            
-            if (userIcon != null) {
-                // User is logged in, perform logout
+            try {
+                WebElement userIcon = AbstractComponents.accessDOMElement(AbstractComponents.userIconSelector);
+                
+                // If we reach here, user icon exists - user is logged in
                 logger.info("User is logged in. Performing logout...");
                 AbstractComponents.userLogout();
 
@@ -197,9 +289,10 @@ public class BaseTest {
                 // Exit any frame contexts that might be active
                 logger.info("Exiting frame contexts...");
                 AbstractComponents.exitFrameContext();
-            } else {
-                // User is not logged in, no need to logout
-                logger.info("User is not logged in. Skipping logout.");
+                
+            } catch (Exception e) {
+                // User icon not found or other error - user is not logged in
+                logger.info("User is not logged in or logout not needed. Reason: " + e.getMessage());
             }
         } catch (Exception e) {
             // Log exception but continue with teardown

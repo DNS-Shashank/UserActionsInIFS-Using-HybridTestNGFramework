@@ -22,23 +22,13 @@ public class UserDeletionTest extends BaseTest {
     SecurityPage_Users securityPageUsers;
     
     @DataProvider(name = "myUserCredentials")
-    public Object[][] getMyUserCredentials() throws IOException {
-        List<HashMap<String, String>> allCredentials = loadTestData("valid");
+    public Object[][] getMyUserCredentials() {
+        HashMap<String, String> credentials = new HashMap<>();
+        credentials.put("username", getValidUsername());
+        credentials.put("password", getValidPassword());
+        credentials.put("description", "Valid user credentials from environment");
         
-        HashMap<String, String> myUser = null;
-        for (HashMap<String, String> cred : allCredentials) {
-            if (cred.get("description").contains("My user")) {
-                myUser = cred;
-                break;
-            }
-        }
-        
-        if (myUser != null) {
-            return new Object[][] {{ myUser }};
-        } else {
-            logger.error("Could not find 'My user' credentials in the test data");
-            return new Object[0][0];
-        }
+        return new Object[][] {{ credentials }};
     }
     
     @Test(dataProvider = "myUserCredentials", groups = {"smoke", "regression"}, priority = 3, dependsOnMethods = "com.useractionsinifs.testCases.UserCreationTest.createUserTest", description = "Delete the created user")
@@ -52,7 +42,7 @@ public class UserDeletionTest extends BaseTest {
         
         // Navigate to Security
         securityPageUsers = landingPage.navigateToComponent("Security OS");
-        Thread.sleep(3000);
+        Thread.sleep(8000);
         
         // Force frame switch before performing actions
         securityPageUsers.enterFirstAvailableIframe();
@@ -61,7 +51,7 @@ public class UserDeletionTest extends BaseTest {
         // Delete the created user
         securityPageUsers.deleteUser(UserCreationTest.createdUserEmail);
         Thread.sleep(3000);
-        System.out.println();
+        System.out.println(); 
         // Verify user is deleted
         Assert.assertFalse(securityPageUsers.deleteUserConfirmation(UserCreationTest.createdUserEmail));
         

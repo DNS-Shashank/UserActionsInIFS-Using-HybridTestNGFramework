@@ -55,7 +55,7 @@ public class TestListener implements ITestListener, IAnnotationTransformer {
             
             // Take screenshot and attach to report
             String screenshotPath = baseTest.takeScreenshot(result.getMethod().getMethodName());
-            if (screenshotPath != null) {
+            if (screenshotPath != null && !screenshotPath.isEmpty()) {
                 // Add screenshot to report
                 extentTest.get().log(Status.INFO, "Screenshot captured at: " + screenshotPath);
                 // Use MediaEntityBuilder to attach screenshot

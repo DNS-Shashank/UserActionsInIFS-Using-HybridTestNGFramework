@@ -21,42 +21,11 @@
       </class> <!-- com.useractionsinifs.testCases.UserPasswordResetTest -->
       <class name="com.useractionsinifs.testCases.UserCreationTest">
         <methods>
-          <include name="createUserTest" invocation-numbers="0"/>
+          <include name="createUserTest"/>
           <include name="initializeDriver"/>
           <include name="tearDown"/>
         </methods>
       </class> <!-- com.useractionsinifs.testCases.UserCreationTest -->
-      <class name="com.useractionsinifs.testCases.UserDeletionTest">
-        <methods>
-          <include name="initializeDriver"/>
-          <include name="tearDown"/>
-          <include name="deleteUserTest" invocation-numbers="0"/>
-        </methods>
-      </class> <!-- com.useractionsinifs.testCases.UserDeletionTest -->
     </classes>
   </test> <!-- Smoke Tests(failed) -->
-  <test thread-count="5" name="Regression Tests(failed)" verbose="0">
-    <groups>
-      <run>
-        <include name="smoke"/>
-        <include name="smoke"/>
-      </run>
-    </groups>
-    <classes>
-      <class name="com.useractionsinifs.testCases.UserCreationTest">
-        <methods>
-          <include name="createUserTest" invocation-numbers="0"/>
-          <include name="initializeDriver"/>
-          <include name="tearDown"/>
-        </methods>
-      </class> <!-- com.useractionsinifs.testCases.UserCreationTest -->
-      <class name="com.useractionsinifs.testCases.UserDeletionTest">
-        <methods>
-          <include name="initializeDriver"/>
-          <include name="tearDown"/>
-          <include name="deleteUserTest" invocation-numbers="0"/>
-        </methods>
-      </class> <!-- com.useractionsinifs.testCases.UserDeletionTest -->
-    </classes>
-  </test> <!-- Regression Tests(failed) -->
 </suite> <!-- Failed suite [IFS User Actions Test Suite] -->

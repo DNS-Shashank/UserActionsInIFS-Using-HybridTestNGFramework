@@ -22,34 +22,37 @@ public class LoginTests extends BaseTest {
     LandingPage landingPage;
     
     @DataProvider(name = "validLoginData")
-    public Object[][] getValidLoginData() throws IOException {
-        // Load valid credentials from JSON
-        List<HashMap<String, String>> validCredentials = loadTestData("valid");
+    public Object[][] getValidLoginData() {
+        // Create credential HashMap directly from environment variables
+        HashMap<String, String> validCredentials = new HashMap<>();
+        validCredentials.put("username", getValidUsername());
+        validCredentials.put("password", getValidPassword());
+        validCredentials.put("description", "Valid user credentials from environment");
         
-        // Create a 2D array of objects with each valid credential HashMap
-        Object[][] data = new Object[validCredentials.size()][1];
-        for (int i = 0; i < validCredentials.size(); i++) {
-            data[i][0] = validCredentials.get(i);
-        }
-        
-        return data;
+        return new Object[][] {{ validCredentials }};
     }
     
     @DataProvider(name = "invalidLoginData")
-    public Object[][] getInvalidLoginData() throws IOException {
-        // Load invalid credentials from JSON
-        List<HashMap<String, String>> invalidCredentials = loadTestData("invalid");
-        
-        // Create a 2D array of objects with each invalid credential HashMap
-        Object[][] data = new Object[invalidCredentials.size()][1];
-        for (int i = 0; i < invalidCredentials.size(); i++) {
-            data[i][0] = invalidCredentials.get(i);
-        }
-        
-        return data;
+    public Object[][] getInvalidLoginData() {
+        // Create multiple invalid credential scenarios
+        return new Object[][] {
+            { createCredentialMap(getInvalidUsername(), getInvalidPassword(), "Invalid username and password") },
+            { createCredentialMap(getValidUsername(), "wrongPassword123", "Valid username but invalid password") },
+            { createCredentialMap("invaliduser@test.com", getValidPassword(), "Invalid username but valid password") },
+            { createCredentialMap("", "validPassword1", "Empty username") },
+            { createCredentialMap("testuser@infor.com", "", "Empty password") }
+        };
     }
     
-    @Test(dataProvider = "validLoginData", groups = "smoke",priority = 1,description = "Verify user can login and logout successfully with valid credentials")
+    private HashMap<String, String> createCredentialMap(String username, String password, String description) {
+        HashMap<String, String> credentials = new HashMap<>();
+        credentials.put("username", username);
+        credentials.put("password", password);
+        credentials.put("description", description);
+        return credentials;
+    }
+    
+    @Test(dataProvider = "validLoginData", groups = "login",priority = 1,description = "Verify user can login and logout successfully with valid credentials")
     public void validLoginTest(HashMap<String, String> userData) throws InterruptedException {
         logger.info("Starting Valid Login Test");
         logger.info("Using credentials: " + userData.get("description"));
@@ -57,14 +60,13 @@ public class LoginTests extends BaseTest {
         // Login using data from JSON
         landingPage = loginPage.clickSignInButton(userData.get("username"), userData.get("password"));
         logger.info("Verifying successful login");
-        // Short wait to ensure page loads completely
         Thread.sleep(8000);
         Assert.assertTrue(landingPage.verifyLandingPage());
         // Test is complete - logout will be handled by BaseTest tearDown
         logger.info("Login test completed successfully");
     }
     
-    @Test(dataProvider = "invalidLoginData", groups = "regression",priority = 1,description = "Verify system properly handles invalid login attempts")
+    @Test(dataProvider = "invalidLoginData", groups = "login",priority = 2,description = "Verify system properly handles invalid login attempts")
     public void invalidLoginTest(HashMap<String, String> userData) throws InterruptedException {
         logger.info("Starting Invalid Login Test");
         logger.info("Using invalid credentials: " + userData.get("description"));
