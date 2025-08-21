@@ -20,7 +20,7 @@ public class LoginTests extends BaseTest {
     private static final Logger logger = LogManager.getLogger(LoginTests.class);
     
     LandingPage landingPage;
-    
+    //New comment
     @DataProvider(name = "validLoginData")
     public Object[][] getValidLoginData() {
         // Create credential HashMap directly from environment variables
