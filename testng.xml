@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="IFS User Actions Test Suite" preserve-order="true" group-by-instances="true">
+    <listeners>
+        <listener class-name="com.useractionsinifs.testComponents.listeners.TestListener"/>
+    </listeners>
+    
+    <test name="Login Tests">
+        <groups>
+            <run>
+                <include name="login"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.useractionsinifs.testCases.LoginTests"/>
+        </classes>
+    </test>
+    
+    <test name="Smoke Tests" preserve-order="true" group-by-instances="false">
+        <groups>
+            <run>
+                <include name="smoke"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.useractionsinifs.testCases.UserCreationTest"/>
+            <class name="com.useractionsinifs.testCases.UserPasswordResetTest"/>
+            <class name="com.useractionsinifs.testCases.UserDeletionTest"/>
+        </classes>
+    </test>
+    
+    <test name="Regression Tests" preserve-order="true" group-by-instances="false">
+        <groups>
+            <run>
+                <include name="regression"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.useractionsinifs.testCases.UserCreationTest"/>
+            <class name="com.useractionsinifs.testCases.UserEnableDisableTest"/>
+            <class name="com.useractionsinifs.testCases.UserSecurityRolesTest"/>
+            <class name="com.useractionsinifs.testCases.UserCopyTest"/>
+            <class name="com.useractionsinifs.testCases.UserDeletionTest"/>
+        </classes>
+    </test>
+</suite>
