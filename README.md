@@ -12,8 +12,6 @@
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)]()
 [![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=for-the-badge)]()
 
-**🏆 Production-ready test automation framework for IFS (Industrial and Financial Systems)**  
-*Built with modern design patterns, enterprise security, and scalable architecture*
 
 [Quick Start](#-quick-start) • [Features](#-features) • [Documentation](#-documentation) • [Contributing](#-contributing)
 
